@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
@@ -35,7 +36,6 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('plainPassword', PasswordType::class, [
 				'label' => 'Password',
-				'label_attr' => ['class' => 'col-md-4 col-form-label text-md-end'],
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
@@ -52,7 +52,22 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-        ;
+			->add('plainPassword', RepeatedType::class, [
+				'type' => PasswordType::class,
+				'mapped' => false,
+				'label_attr' => ['class' => 'col-md-4 col-form-label text-md-end'],
+				'invalid_message' => 'The password fields must match.',
+				'options' => ['attr' => ['class' => 'form-control']],
+				'required' => true,
+				'first_options'  => [
+					'label' => 'Password',
+					'label_attr' => ['class' => 'col-md-4 col-form-label text-md-end']
+				],
+				'second_options' => [
+					'label' => 'Repeat Password',
+					'label_attr' => ['class' => 'col-md-4 col-form-label text-md-end']
+				],
+			]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

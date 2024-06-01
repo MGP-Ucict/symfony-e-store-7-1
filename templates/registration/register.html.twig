@@ -10,11 +10,22 @@
                 <div class="card-header"> Register </div>
 
                 <div class="card-body">
-					{% if form_errors(registrationForm) %}
+					{% if not registrationForm.vars.valid %}
 						<div class="alert alert-danger">
-							{{ form_errors(registrationForm) }}
+						{{ form_errors(registrationForm) }}
+						{% for children in registrationForm.children %}
+							{% if not children.vars.valid %}
+								{{ form_errors(children) }}
+							{% endif %}
+							{% for child in children %}
+								{% if not child.vars.valid %}
+									{{ form_errors(child) }}
+								{% endif %}
+							{% endfor %}
+						{% endfor %}
 						</div>
-					{% endif %}
+					 {% endif %}
+			
 					{{ form_start(registrationForm) }}
 						<div class="row mb-3">
 							{{ form_label(registrationForm.email) }}
@@ -23,9 +34,15 @@
 							</div>
 						</div>
 						<div class="row mb-3">
-							{{ form_label(registrationForm.plainPassword) }}
+							{{ form_label(registrationForm.plainPassword.first) }}
 							<div class="col-md-6">
-								{{ form_widget(registrationForm.plainPassword) }}
+								{{ form_widget(registrationForm.plainPassword.first) }}
+							</div>
+						</div>
+						<div class="row mb-3">
+							{{ form_label(registrationForm.plainPassword.second) }}
+							<div class="col-md-6">
+								{{ form_widget(registrationForm.plainPassword.second) }}
 							</div>
 						</div>
 						<div class="form-check offset-md-4">
