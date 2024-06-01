@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+  <div class="container">
+  <a href="/logout">Logout</a>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header"> Home </div>
+
+                <div class="card-body">
+					{{user.getEmail()}}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
