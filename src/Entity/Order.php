@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,14 +17,26 @@ class Order
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, options:['collation'=>'utf8_general_ci'])]
     private ?string $address = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, options:['collation'=>'utf8_general_ci'])]
     private ?string $status = null;
 
-    #[ORM\Column(type: Types::BIGINT)]
-    private ?string $user_id = null;
+    /**
+     * @var Collection<int, OrderProduct>
+     */
+    #[ORM\OneToMany(targetEntity: OrderProduct::class, mappedBy: 'order_id')]
+    private Collection $orderProducts;
+
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->orderProducts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -52,15 +66,45 @@ class Order
 
         return $this;
     }
-
-    public function getUserId(): ?string
+	
+    /**
+     * @return Collection<int, OrderProduct>
+     */
+    public function getOrderProducts(): Collection
     {
-        return $this->user_id;
+        return $this->orderProducts;
     }
 
-    public function setUserId(string $user_id): static
+    public function addOrderProduct(OrderProduct $orderProduct): static
     {
-        $this->user_id = $user_id;
+        if (!$this->orderProducts->contains($orderProduct)) {
+            $this->orderProducts->add($orderProduct);
+            $orderProduct->setOrderId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderProduct(OrderProduct $orderProduct): static
+    {
+        if ($this->orderProducts->removeElement($orderProduct)) {
+            // set the owning side to null (unless already changed)
+            if ($orderProduct->getOrderId() === $this) {
+                $orderProduct->setOrderId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
