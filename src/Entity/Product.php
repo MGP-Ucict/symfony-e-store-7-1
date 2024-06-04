@@ -47,26 +47,12 @@ class Product
     #[ORM\Column(type: Types::BIGINT)]
     private ?string $created_by = null;
 
-    #[ORM\Column]
-    private ?\DateTime $updated_at = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updated_at = null;
+
 
     #[ORM\Column(type: Types::BIGINT)]
     private ?string $updated_by = null;
-
-    #[ORM\ManyToOne(inversedBy: 'product_id')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?OrderProduct $orderProduct = null;
-
-    /**
-     * @var Collection<int, OrderProduct>
-     */
-    #[ORM\OneToMany(targetEntity: OrderProduct::class, mappedBy: 'product_id')]
-    private Collection $orderProducts;
-
-    public function __construct()
-    {
-        $this->orderProducts = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -193,12 +179,12 @@ class Product
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+	public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(\DateTime $updated_at): static
+    public function setUpdatedAt(\DateTimeInterface $updated_at): static
     {
         $this->updated_at = $updated_at;
 

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header"><h3>Детайли за продукт</h3> </div>
+
+                <div class="card-body">
+						<div class="row">
+							#{{ product.id }}
+						</div>
+						<div class="row">
+							Наименование: {{ product.nameBg }}
+						</div>
+						<div class="row">
+							Описание: {{ product.descriptionBg }}
+						</div>
+						<div class="row">
+							Цвят: {{ product.colorBg }}
+						</div>
+						<div class="row">
+							Цена: {{ product.price }} лева
+						</div>
+						<div class="row">
+							<a class="btn btn-primary" href="/add-to-cart/{{product.id}}">Добави в количката</a>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>	
+{% endblock %}
